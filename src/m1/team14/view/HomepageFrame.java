@@ -1,6 +1,7 @@
 package m1.team14.view;
 
 import m1.team14.controller.AbstractController;
+import m1.team14.controller.IconController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,11 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomepageFrame extends BaseGuiFrame implements IViewPanel {
+    /////////========================= test iconController
+    private IconController iconController;
+    /////////=========================
+
+
     // dealer icon image path(absolute path)
     private final String curDealerIconPath = "/Users/leichenzhou/Documents/Fall2019Semester/info-5100/final5100_module1/INFO-5100-Project/src/m1/team14/images/businessman64px.png";
     private final String scrollIconPath = "/Users/leichenzhou/Documents/Fall2019Semester/info-5100/final5100_module1/INFO-5100-Project/src/m1/team14/images/businessman32px.png";
     private List<String> dealers;
-    private static int numOfDealers = 8;  // for test
+    private static int numOfDealers = 8;  // --for test
 
     List<String> getDealers(int num){
         List<String> allDealers = new ArrayList<>();
@@ -53,8 +59,8 @@ public class HomepageFrame extends BaseGuiFrame implements IViewPanel {
     public HomepageFrame() {
     }
 
-    public HomepageFrame(AbstractController homepageUpCtrl) {
-        this.homepageUpCtrl = homepageUpCtrl;
+    public HomepageFrame(IconController iconController) {
+        this.iconController = iconController;
     }
 
     @Override
@@ -65,17 +71,19 @@ public class HomepageFrame extends BaseGuiFrame implements IViewPanel {
         curDealerIconPanel = new JPanel();
         curDealerIcon = new ImageIcon(curDealerIconPath);
         curDealerImg = new JLabel(curDealerIcon);
-        curDealerLabel = new JLabel("Current Dealer");
+        curDealerLabel = new JLabel("Dealer 1");
 
         // button components
         buttonPanel = new JPanel();
         searchBtn = new JButton("Search");
+        searchBtn.addActionListener(e -> new SearchPageFrameTest());
         searchBtn.setBounds(0, 0, 100, 100);
         loginBtn = new JButton("Login");
+        loginBtn.addActionListener(e -> new LoginPageFrameTest());
         historyBtn = new JButton("History");
+        historyBtn.addActionListener(e -> new HistoryPageFrameTest());
 
         // scroll panel
-//        scrollPanel = new JScrollPane();
         viewPanel = new JPanel();
     }
 
@@ -102,20 +110,30 @@ public class HomepageFrame extends BaseGuiFrame implements IViewPanel {
         }
     }
 
+    /*
+    * create single icon panel for scroll panel
+    * @Param: String dealer could be the dealer id
+    * */
     private JPanel createIconPanel(String dealer) {
         JPanel padPanel = new JPanel();
         padPanel.setBorder(new EmptyBorder(2,1,2,1));
 
         JPanel dealerPanel = new JPanel(new BorderLayout());
 
+        JPanel labelPanel = new JPanel();
+//        JLabel dealerIdLabel = new JLabel(dealer);
+        JButton dealerIdBnt = new JButton(dealer);
+        /////////=========================
+        dealerIdBnt.addActionListener(e -> this.iconController.changeCurrentDealer(dealerIdBnt.getText()));
+        /////////=========================
+
+//        labelPanel.add(dealerIdLabel);
+        labelPanel.add(dealerIdBnt);
+
         JPanel iconPanel = new JPanel();
         ImageIcon dealImg = new ImageIcon(scrollIconPath);
         JLabel iconLabel = new JLabel(dealImg);
         iconPanel.add(iconLabel);
-
-        JPanel labelPanel = new JPanel();
-        JLabel dealerIdLabel = new JLabel(dealer);
-        labelPanel.add(dealerIdLabel);
 
         dealerPanel.add(iconPanel, BorderLayout.CENTER);
         dealerPanel.add(labelPanel, BorderLayout.SOUTH);
@@ -129,11 +147,14 @@ public class HomepageFrame extends BaseGuiFrame implements IViewPanel {
         Box hbox2 = Box.createHorizontalBox();
 
         hbox1.add(curDealerIconPanel);
-        hbox1.add(Box.createHorizontalStrut(140));
+        hbox1.add(Box.createHorizontalStrut(140)); // the blanket place
         hbox1.add(buttonPanel);
 
-        scrollPanel = new JScrollPane(viewPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPanel.setPreferredSize(new Dimension(400, 100));
+        scrollPanel = new JScrollPane(viewPanel,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        scrollPanel.setPreferredSize(new Dimension(400, 110));
         hbox2.add(scrollPanel);
 
         Box vbox1 = Box.createVerticalBox();
@@ -148,10 +169,18 @@ public class HomepageFrame extends BaseGuiFrame implements IViewPanel {
     private void addButtons(JPanel buttonPanel) {
         buttonPanel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        fillButtonPanel(buttonPanel, searchBtn, constraints, 0, 0, 1, 1, 0.6, 1, GridBagConstraints.NONE, GridBagConstraints.NORTH);
-        fillButtonPanel(buttonPanel, historyBtn, constraints, 1, 0, 1, 1, 0.2, 1, GridBagConstraints.NONE, GridBagConstraints.NORTH);
-        fillButtonPanel(buttonPanel, loginBtn, constraints, 2, 0, 1, 1, 0.2, 1, GridBagConstraints.NONE, GridBagConstraints.NORTH);
 
+        fillButtonPanel(buttonPanel, searchBtn, constraints,
+                0, 0, 1, 1, 0.6, 1,
+                GridBagConstraints.NONE, GridBagConstraints.NORTH);
+
+        fillButtonPanel(buttonPanel, historyBtn, constraints,
+                1, 0, 1, 1, 0.2, 1,
+                GridBagConstraints.NONE, GridBagConstraints.NORTH);
+
+        fillButtonPanel(buttonPanel, loginBtn, constraints,
+                2, 0, 1, 1, 0.2, 1,
+                GridBagConstraints.NONE, GridBagConstraints.NORTH);
     }
 
     /*
@@ -204,6 +233,8 @@ public class HomepageFrame extends BaseGuiFrame implements IViewPanel {
 
     @Override
     public void modelPropertyChange(PropertyChangeEvent evt) {
+        String newCurrentDealer = (String) evt.getNewValue();
 
+        curDealerLabel.setText(newCurrentDealer);
     }
 }
