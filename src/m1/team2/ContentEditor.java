@@ -2,7 +2,7 @@ package m1.team2;
 
 import dataproto.Dealer;
 
-class ContentEditor {
+public class ContentEditor {
 
     public final static ContentEditor INSTANCE = new ContentEditor();
 
@@ -15,7 +15,7 @@ class ContentEditor {
 
     public static void main(String[] args) {
         Dealer dealer = new Dealer();
-        dealer.setId("ch");
+        dealer.setId("u1");
         ContentEditor.INSTANCE.openEditor(dealer);
     }
 }

@@ -10,11 +10,15 @@ class HTMLGenerator {
      */
     public static String generateHTML(RichText richText)
     {
+        // if richtext is null, return an empty string
+        if(richText == null)
+            return "";
+
         // retrieve plainText from richText object
         String plainText = richText.getPlainText();
 
         // if plainText is empty or null, return an empty string
-        if(plainText.equals("") || plainText.equals(null))
+        if(plainText == null || plainText.equals(""))
             return "";
 
         // replace new line(s) with <br> tag
@@ -23,7 +27,10 @@ class HTMLGenerator {
         StringBuilder script = new StringBuilder(plainText);
 
         // insert opening and closing <font size> tag
-        script.insert(0, "<font size=\""+richText.getFontSize()+"\">").append("</font>");
+        if(richText.getFontSize() != null) {
+            script.insert(0, "<font size=\""+richText.getFontSize()+"\">").append("</font>");
+        }
+
 
         // if isItalic() method returns true, insert opening and closing italic tag
         if(richText.isItalic())
